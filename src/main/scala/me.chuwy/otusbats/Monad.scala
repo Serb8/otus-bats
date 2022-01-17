@@ -52,6 +52,6 @@ object Monad {
 
   // Syntax extensions
   implicit class ToMonadOps[F[_], A](a: A) {
-    def flattenOp(implicit ev: Monad[F]): F[A] = ev.point(a)
+    def pointOp(implicit ev: Monad[F]): F[A] = ev.point(a)
   }
 }
