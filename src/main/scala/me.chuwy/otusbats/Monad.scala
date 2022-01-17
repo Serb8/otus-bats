@@ -39,16 +39,19 @@ object Monad {
   def apply[F[_]](implicit ev: Monad[F]): Monad[F] = ev
 
   // Syntax extensions
-  implicit class MonadOps[F[_], A, B](fa: F[A])/*(a: A)(ffa: F[F[A]])*/ {
+  implicit class MonadOps[F[_], A, B](fa: F[A]) {
     def flatMapOp(f: A => F[B])(implicit ev: Monad[F]): F[B] = ev.flatMap(fa)(f)
 
-//    def pointOp(implicit ev: Monad[F]): F[A] = ev.point(a)
-//
-//    def flattenOp(implicit ev: Monad[F]): F[A] = ev.flatten(ffa)
-
     def mapOp(f: A => B)(implicit ev: Monad[F]): F[B] = ev.map(fa)(f)
-
-
   }
 
+  // Syntax extensions
+  implicit class NestedMonadOps[F[_], A](ffa: F[F[A]]) {
+    def flattenOp(implicit ev: Monad[F]): F[A] = ev.flatten(ffa)
+  }
+
+  // Syntax extensions
+  implicit class ToMonadOps[F[_], A](a: A) {
+    def flattenOp(implicit ev: Monad[F]): F[A] = ev.point(a)
+  }
 }
